@@ -23,6 +23,7 @@
 
 namespace CrEOF\Spatial\ORM\Query\AST\Functions;
 
+use CrEOF\Spatial\DBAL\Platform\SpatialPlatformRegistry;
 use CrEOF\Spatial\Exception\UnsupportedPlatformException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
@@ -109,11 +110,24 @@ abstract class AbstractSpatialDQLFunction extends FunctionNode
      */
     protected function validatePlatform(AbstractPlatform $platform)
     {
-        $platformName = $platform->getName();
+        $spatialPlatform = SpatialPlatformRegistry::resolve($platform);
 
-        if (isset($this->platforms) && !in_array($platformName, $this->platforms)) {
+        foreach ($this->platforms as $supportedPlatform) {
+            // Keep custom functions written against older releases working.
+            if ($supportedPlatform === 'mysql') {
+                $supportedPlatform = 'CrEOF\\Spatial\\DBAL\\Platform\\MySql';
+            } elseif ($supportedPlatform === 'postgresql') {
+                $supportedPlatform = 'CrEOF\\Spatial\\DBAL\\Platform\\PostgreSql';
+            }
+
+            if (is_a($spatialPlatform, $supportedPlatform)) {
+                return;
+            }
+        }
+
+        if (isset($this->platforms)) {
             throw new UnsupportedPlatformException(
-                sprintf('DBAL platform "%s" is not currently supported.', $platformName)
+                sprintf('DBAL platform "%s" is not currently supported.', get_class($platform))
             );
         }
     }

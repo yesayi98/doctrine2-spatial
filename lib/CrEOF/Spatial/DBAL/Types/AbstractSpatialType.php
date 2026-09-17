@@ -26,6 +26,7 @@ namespace CrEOF\Spatial\DBAL\Types;
 use CrEOF\Spatial\Exception\InvalidValueException;
 use CrEOF\Spatial\Exception\UnsupportedPlatformException;
 use CrEOF\Spatial\DBAL\Platform\PlatformInterface;
+use CrEOF\Spatial\DBAL\Platform\SpatialPlatformRegistry;
 use CrEOF\Spatial\PHP\Types\Geography\GeographyInterface;
 use CrEOF\Spatial\PHP\Types\Geometry\GeometryInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
@@ -201,14 +202,6 @@ abstract class AbstractSpatialType extends Type
      */
     private function getSpatialPlatform(AbstractPlatform $platform)
     {
-        $const = sprintf('self::PLATFORM_%s', strtoupper($platform->getName()));
-
-        if (! defined($const)) {
-            throw new UnsupportedPlatformException(sprintf('DBAL platform "%s" is not currently supported.', $platform->getName()));
-        }
-
-        $class = sprintf('CrEOF\Spatial\DBAL\Platform\%s', constant($const));
-
-        return new $class;
+        return SpatialPlatformRegistry::resolve($platform);
     }
 }

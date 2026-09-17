@@ -5,6 +5,7 @@ MySQL and PostGIS database.
 
  * [Symfony Install](install.md)
  * [Symfony Configuration](configuration.md)
+ * [Platform adapters](platforms.md)
  * [Common Methods](common.md) (also included in MySQL and PostGreSQL)
  * [MySQL Methods](mysql.md)
  * [PostGreSQL Methods](postgresql.md)

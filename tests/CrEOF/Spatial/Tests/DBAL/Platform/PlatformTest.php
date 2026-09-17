@@ -49,7 +49,7 @@ class PlatformTest extends OrmMockTestCase
 
     /**
      * @expectedException        \CrEOF\Spatial\Exception\UnsupportedPlatformException
-     * @expectedExceptionMessage DBAL platform "YourSQL" is not currently supported.
+     * @expectedExceptionMessage DBAL platform "Doctrine\DBAL\Platforms\SqlitePlatform" is not currently supported.
      */
     public function testUnsupportedPlatform()
     {
